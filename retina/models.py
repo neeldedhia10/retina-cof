@@ -3,17 +3,13 @@ from django.core.validators import int_list_validator
 
 
 class Patient(models.Model):
-    patient_id = models.CharField(max_length=15, primary_key=True)
-    # patient_name = models.CharField(max_length=50)
-    # is_right = models.BooleanField(default=True)
-    width = models.IntegerField(default='0')
-    height = models.IntegerField(default='0')
+    patient_name = models.CharField(max_length=255, primary_key=False,default='def')
+    patient_id = models.CharField(max_length=10, primary_key=True)
     link = models.CharField(max_length=500, default='')
-    od_x = models.IntegerField(default='0')
-    od_y = models.IntegerField(default='0')
     username = models.CharField(max_length=150,default='')
     is_processed = models.BooleanField(default=False)
     under_process = models.BooleanField(default=False)
+    dr_type = models.CharField(max_length=100, default='')
 
     def __str__(self):
         return self.patient_id
