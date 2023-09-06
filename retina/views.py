@@ -47,14 +47,6 @@ def index(request):
         up = Patient.objects.get(patient_id=patient_id)
         up.under_process = True
         pid_imgfn = curr_patient.link
-        # pid_imgfn = os.path.join(patient_id + ".jpg")
-        # Get image dimensions
-        # im = Image.open(os.path.join(static_path, pid_imgfn))
-        # width, height = im.size
-        # print("width = " + str(width))
-        # print("height = " + str(height))
-        # up.width = width
-        # up.height = height
 
         up.save()
 
@@ -71,19 +63,16 @@ def last(request):
     if request.method == 'POST':
         # Last page so no need to check for is_back
         # is_back = 'is_back' in request.POST and request.POST.get('is_back')
-        patient_id = 'patient_id' in request.POST and request.POST.get(
-            'patient_id')
+        patient_id = request.POST.get('patient_id')
         patient = Patient.objects.get(patient_id=patient_id)
         # pid_imgfn = os.path.join(patient_id + ".jpg")
-
+        
         # if is_back == "0":
-        my_x = 'my_x' in request.POST and request.POST.get('my_x')
-        my_y = 'my_y' in request.POST and request.POST.get('my_y')
+        dr_type = request.POST.get('dr_type', None)
         # Save the OD centers
         user = request.user
         patient.username = user.username
-        patient.od_x = my_x
-        patient.od_y = my_y
+        patient.dr_type = dr_type
         patient.is_processed = True
         patient.under_process = False
         patient.save()
@@ -91,7 +80,6 @@ def last(request):
         # csv_write(patient_id)
         all_patients = Patient.objects.all()
         count = all_patients.count()
-        print("Count in ma = : " + str(all_patients.count()))
         all_over = True
         for i in range(count):
             if all_patients[i].is_processed == False:
@@ -125,12 +113,7 @@ def last(request):
 
             # Get image dimensions
             pp = Patient.objects.get(patient_id=patient_id)
-            # im = Image.open(os.path.join(static_path, pid_imgfn))
-            # width, height = im.size
-            # print("width = " + str(width))
-            # print("height = " + str(height))
-            # pp.width = width
-            # pp.height = height
+    
             pp.save()
             template = loader.get_template('retina/index.html')
             context = {

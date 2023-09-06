@@ -7,19 +7,18 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'cof.settings')
 
 
 # Path to your CSV file
-csv_file_path = 'scripts/sorted_image_links.csv'
+csv_file_path = 'data.csv'
 Patient.objects.all().delete()
 # Read the CSV file and populate data
 with open(csv_file_path, 'r', newline='', encoding='utf-8') as csvfile:
     reader = csv.reader(csvfile)
-    header = next(reader)  # Skip the header row
 
     with transaction.atomic():
         for row in reader:
             if len(row) >= 2:
-                filename = row[0]
-                link = row[1]
-                patient_id = filename.split('.')[0]
+                patient_name = row[0]
+                link = row[2]
+                patient_id = row[1]
 
                 # Check if a record with the same patient_id exists
                 existing_patient = Patient.objects.filter(
@@ -28,12 +27,14 @@ with open(csv_file_path, 'r', newline='', encoding='utf-8') as csvfile:
                 if existing_patient:
                     # Update the existing record if needed
                     existing_patient.link = link
+                    existing_patient.patient_id = patient_id
                     existing_patient.save()
                 else:
                     # Create a new Patient instance and save it to the database
                     Patient.objects.create(
                         patient_id=patient_id,
-                        link=link
+                        link=link,
+                        patient_name = patient_name
                     )
 
 print("Database updated successfully.")
