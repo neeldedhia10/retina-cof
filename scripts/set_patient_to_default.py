@@ -11,6 +11,7 @@ patients = Patient.objects.all()
 # Update fields for each patient
 for patient in patients:
     patient.dr_type = ''
+    patient.dme_status = ''
     patient.username = ''
     patient.is_processed = False  # Set to default value
     patient.under_process = False  # Set to default value

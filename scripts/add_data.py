@@ -5,9 +5,8 @@ import os
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'cof.settings')
 
-
 # Path to your CSV file
-csv_file_path = 'data.csv'
+csv_file_path = 'scripts/shuffled_file.csv'
 Patient.objects.all().delete()
 # Read the CSV file and populate data
 with open(csv_file_path, 'r', newline='', encoding='utf-8') as csvfile:
