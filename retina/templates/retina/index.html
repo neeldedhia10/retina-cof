@@ -1,26 +1,26 @@
-
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <!-- loads the path to your staticfiles -->
-    {%  load static  %}
+    {% load static %}
     <!--{{pid_imgfn}} -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    
+
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
         integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-    
+
     <link rel="stylesheet" type="text/css" href="{% static 'users/main.css' %}">
-    
+
     {% if title %}
-    <title> {{ title }}</title>
+    <title>{{ title }}</title>
     {% else %}
     <title>OPTUS Images Center Identification</title>
     {% endif %}
 
-<style>
+    <style>
         .button {
             background-color: #4CAF50;
             border: none;
@@ -57,15 +57,14 @@
         .select-style select:focus {
             outline: none;
         }
-
     </style>
 
-    <script src = "/static/jquery.min.js">
+    <script src="/static/jquery.min.js">
     </script>
     <script>
-    var pid_imgfn = "{{ pid_imgfn }}";
-    var patient_id = "{{ patient_id }}";
-    // var is_back = "{{ is_back }}"
+        var pid_imgfn = "{{ pid_imgfn }}";
+        var patient_id = "{{ patient_id }}";
+        // var is_back = "{{ is_back }}"
     </script>
 
 </head>
@@ -94,45 +93,68 @@
             </div>
         </nav>
     </header>
-<h1> IMAGE NO: {{ patient_id }}      </h1>    
-<h1> TOTAL IMAGES: 2919</h1>
-<img src="{{ pid_imgfn }}" alt="Retinal image">
-<!-- <h1> Link: <strong> {{ pid_imgfn }}  </strong> </h1> -->
-<h2>Select DR Type:</h2>
-<form id="drTypeForm" action="{% url 'retina:last' %}" method="post">
-    {% csrf_token %}
-    
-    <label>
-        <input type="radio" name="dr_type" value="No DR"> No DR
-    </label><br>
-    <label>
-        <input type="radio" name="dr_type" value="Mild DR"> Mild DR
-    </label><br>
-    <label>
-        <input type="radio" name="dr_type" value="Moderate DR"> Moderate DR
-    </label><br>
-    <label>
-        <input type="radio" name="dr_type" value="Proliferative DR"> Proliferative DR
-    </label><br>
-    <label>
-        <input type="radio" name="dr_type" value="Non-Proliferative DR"> Non-Proliferative DR
-    </label><br>
-    <input type="hidden" id="my_pidjs" name="pid_imgfn" value="{{ pid_imgfn }}"> <br><br>
-    <input type="hidden" id="my_patientid" name="patient_id" value="{{ patient_id }}"> <br><br>
+    <h1> IMAGE NO: {{ patient_id }} </h1>
+    <h1> TOTAL IMAGES: 2919</h1>
+    <img src="{{ pid_imgfn }}" alt="Retinal image">
+    <!-- <h1> Link: <strong> {{ pid_imgfn }}  </strong> </h1> -->
+    <h2>Select DR Type:</h2>
+    <form id="drTypeForm" action="{% url 'retina:last' %}" method="post">
+        {% csrf_token %}
 
-    <input type="submit" disabled class="button" value="Save" id="submitButton">
-</form>
+        <label>
+            <input type="radio" name="dr_type" value="No DR"> No DR
+        </label><br>
+        <label>
+            <input type="radio" name="dr_type" value="Mild DR"> Mild DR
+        </label><br>
+        <label>
+            <input type="radio" name="dr_type" value="Moderate DR"> Moderate DR
+        </label><br>
+        <label>
+            <input type="radio" name="dr_type" value="Severe Non-Proliferative DR"> Proliferative DR
+        </label><br>
+        <label>
+            <input type="radio" name="dr_type" value="Proliferative DR"> Non-Proliferative DR
+        </label><br>
+        <h2>DME Status:</h2>
+        <label>
+            <input type="radio" name="dme_status" value="Yes"> Yes
+        </label><br>
+        <label>
+            <input type="radio" name="dme_status" value="No"> No
+        </label><br>
 
-<script>
-    const radioButtons = document.querySelectorAll('input[name="dr_type"]');
-    const submitButton = document.getElementById('submitButton');
-   
-    // Add an event listener to each radio button
-    radioButtons.forEach((radioButton) => {
-        radioButton.addEventListener('change', () => {
-            submitButton.disabled = false; // Enable the submit button when a radio button is selected
+        <input type="hidden" id="my_pidjs" name="pid_imgfn" value="{{ pid_imgfn }}"> <br><br>
+        <input type="hidden" id="my_patientid" name="patient_id" value="{{ patient_id }}"> <br><br>
+
+        <input type="submit" disabled class="button" value="Save" id="submitButton">
+    </form>
+
+    <script>
+        const radioButtonsDR = document.querySelectorAll('input[name="dr_type"]');
+        const radioButtonsDME = document.querySelectorAll('input[name="dme_status"]');
+        const submitButton = document.getElementById('submitButton');
+
+        // Add an event listener to each radio button
+        radioButtonsDR.forEach((radioButton) => {
+            radioButton.addEventListener('change', () => {
+                enableSubmitButton();
+            });
         });
-    });
-</script>
+
+        radioButtonsDME.forEach((radioButton) => {
+            radioButton.addEventListener('change', () => {
+                enableSubmitButton();
+            });
+        });
+
+        function enableSubmitButton() {
+            // Enable the submit button when at least one radio button from both sets is selected
+            const isDRSelected = [...radioButtonsDR].some((radio) => radio.checked);
+            const isDMESelected = [...radioButtonsDME].some((radio) => radio.checked);
+            submitButton.disabled = !(isDRSelected && isDMESelected);
+        }
+    </script>
 </body>
+
 </html>

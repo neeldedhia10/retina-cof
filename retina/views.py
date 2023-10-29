@@ -69,10 +69,12 @@ def last(request):
         
         # if is_back == "0":
         dr_type = request.POST.get('dr_type', None)
-        # Save the OD centers
+        dme_status = request.POST.get('dme_status', None)
+        # Save 
         user = request.user
         patient.username = user.username
         patient.dr_type = dr_type
+        patient.dme_status = dme_status
         patient.is_processed = True
         patient.under_process = False
         patient.save()

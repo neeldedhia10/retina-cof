@@ -10,6 +10,7 @@ class Patient(models.Model):
     is_processed = models.BooleanField(default=False)
     under_process = models.BooleanField(default=False)
     dr_type = models.CharField(max_length=100, default='')
+    dme_status = models.CharField(max_length=100, default='')
 
     def __str__(self):
         return self.patient_id

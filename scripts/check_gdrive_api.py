@@ -1,5 +1,4 @@
 import os
-import csv
 from googleapiclient.discovery import build
 from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
@@ -30,10 +29,6 @@ drive_service = build('drive', 'v3', credentials=creds)
 # ID of the main Google Drive folder containing subfolders
 main_folder_id = '1yyT2KWBNFFmV2nOq1b1B5oXPR6XTVKne'
 
-# Initialize variables for pagination
-page_token = None
-all_files = []
-
 # Function to retrieve files in a folder
 def list_files_in_folder(folder_id):
     folder_files = []
@@ -41,7 +36,7 @@ def list_files_in_folder(folder_id):
     while True:
         results = drive_service.files().list(
             q=f"'{folder_id}' in parents and mimeType contains 'image/'",
-            fields="files(id, name, webViewLink), nextPageToken",
+            fields="files(id, name), nextPageToken",
             pageToken=page_token).execute()
 
         files = results.get('files', [])
@@ -58,19 +53,10 @@ subfolders = drive_service.files().list(
     fields="files(id, name)").execute()
 subfolder_ids = [subfolder['id'] for subfolder in subfolders.get('files', [])]
 
-# Loop through the subfolders and retrieve their files
-for subfolder_id in subfolder_ids:
+# Loop through the subfolders and print folder ID and number of images
+for subfolder in subfolders.get('files', []):
+    subfolder_id = subfolder['id']
+    subfolder_name = subfolder['name']
     subfolder_files = list_files_in_folder(subfolder_id)
-    all_files.extend(subfolder_files)
-
-# Write file names and sharing links to a CSV file
-with open('image_links.csv', 'w', newline='', encoding='utf-8') as csvfile:
-    csvwriter = csv.writer(csvfile)
-    csvwriter.writerow(['File Name', 'Sharing Link'])
-
-    for file in all_files:
-        file_name = file['name']
-        file_id = file['id']
-        csvwriter.writerow([file_name, file_id])
-
-print("CSV file created successfully.")
+    num_images = len(subfolder_files)
+    print(f"Folder ID: {subfolder_id}, Folder Name: {subfolder_name}, Number of Images: {num_images}")
